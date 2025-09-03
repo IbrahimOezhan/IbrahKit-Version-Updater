@@ -3,226 +3,229 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-public class VersionUpdater : EditorWindow
+namespace IbrahKit
 {
-    string currentVersion;
-
-    const string regex = @"^(\D*)(\d+(?:\.\d+)*)(\D+)?$";
-
-    [MenuItem("IbrahKit/VersionUpdater")]
-    public static void ShowExample()
+    public class VersionUpdater : EditorWindow
     {
-        VersionUpdater updater = GetWindow<VersionUpdater>();
-        updater.titleContent = new GUIContent("VersionUpdater");
-    }
+        string currentVersion;
 
-    public void CreateGUI()
-    {
-        currentVersion = string.Empty;
+        const string regex = @"^(\D*)(\d+(?:\.\d+)*)(\D+)?$";
 
-        VisualElement root = rootVisualElement;
-        root.style.paddingLeft = 25;
-        root.style.paddingBottom = 25;
-        root.style.paddingRight = 25;
-        root.style.paddingTop = 25;
-        root.style.flexDirection = FlexDirection.Column;
-    }
-
-    private void OnEnable()
-    {
-        if(NeedsReload()) UpdateWindow();
-    }
-
-    private void OnBecameVisible()
-    {
-        if (NeedsReload()) UpdateWindow();
-    }
-
-    private void OnFocus()
-    {
-        if (NeedsReload()) UpdateWindow();
-    }
-
-    private void UpdateWindow()
-    {
-        currentVersion = Application.version;
-
-        VisualElement root = rootVisualElement;
-
-        root.Clear();
-
-        Label title = new("IbrahKit Version Updater");
-        title.style.fontSize = 30;
-        root.Add(title);
-
-        AddLine(root);
-
-        Match match = Regex.Match(currentVersion, regex);
-
-        if (match.Success)
+        [MenuItem("IbrahKit/VersionUpdater")]
+        public static void ShowExample()
         {
-            string[] splitNumbers = match.Groups[2].Value.Split(".");
+            VersionUpdater updater = GetWindow<VersionUpdater>();
+            updater.titleContent = new GUIContent("VersionUpdater");
+        }
 
-            Button applyButton = new();
-            root.Add(applyButton);
+        private void CreateGUI()
+        {
+            currentVersion = string.Empty;
+
+            VisualElement root = rootVisualElement;
+            root.style.paddingLeft = 25;
+            root.style.paddingBottom = 25;
+            root.style.paddingRight = 25;
+            root.style.paddingTop = 25;
+            root.style.flexDirection = FlexDirection.Column;
+        }
+
+        private void OnEnable()
+        {
+            if (NeedsReload()) UpdateWindow();
+        }
+
+        private void OnBecameVisible()
+        {
+            if (NeedsReload()) UpdateWindow();
+        }
+
+        private void OnFocus()
+        {
+            if (NeedsReload()) UpdateWindow();
+        }
+
+        private void UpdateWindow()
+        {
+            currentVersion = Application.version;
+
+            VisualElement root = rootVisualElement;
+
+            root.Clear();
+
+            Label title = new("IbrahKit Version Updater");
+            title.style.fontSize = 30;
+            root.Add(title);
 
             AddLine(root);
 
-            VisualElement versionRoot = new();
-            root.Add(versionRoot);
+            Match match = Regex.Match(currentVersion, regex);
 
-            Button[] ups = new Button[splitNumbers.Length];
-
-            IntegerField[] fields = new IntegerField[splitNumbers.Length];
-
-            Button[] downs = new Button[splitNumbers.Length];
-
-            VisualElement[] columns = new VisualElement[splitNumbers.Length];
-
-            AddLine(root);
-
-            Button resetButton = new();
-            root.Add(resetButton);
-
-            for (int i = 0; i < columns.Length;i++)
+            if (match.Success)
             {
-                VisualElement column = new();
-                columns[i] = column;
-                versionRoot.Add(column);
+                string[] splitNumbers = match.Groups[2].Value.Split(".");
 
-                Button up = new();
-                ups[i] = up;
-                column.Add(up);
+                Button applyButton = new();
+                root.Add(applyButton);
 
-                IntegerField field = new();
-                fields[i] = field;
-                column.Add(field);
+                AddLine(root);
 
-                Button down = new();
-                downs[i] = down;
-                column.Add(down);
-            }
+                VisualElement versionRoot = new();
+                root.Add(versionRoot);
 
-            applyButton.style.height = 50;
+                Button[] ups = new Button[splitNumbers.Length];
 
-            resetButton.text = "Reset";
+                IntegerField[] fields = new IntegerField[splitNumbers.Length];
 
-            versionRoot.style.flexDirection = FlexDirection.Row;
-            versionRoot.style.flexGrow = 1;
+                Button[] downs = new Button[splitNumbers.Length];
 
-            for (int i = 0; i < splitNumbers.Length; i++)
-            {
-                columns[i].style.flexDirection = FlexDirection.Column;
+                VisualElement[] columns = new VisualElement[splitNumbers.Length];
 
-                ups[i].text = "+";
-                ups[i].style.fontSize = 20;
+                AddLine(root);
 
-                fields[i].value = int.Parse(splitNumbers[i]);
-                fields[i].style.fontSize = 20;
+                Button resetButton = new();
+                root.Add(resetButton);
 
-                downs[i].text = "-";
-                downs[i].style.fontSize = 20;
-                downs[i].pickingMode = fields[i].value > 0 ? PickingMode.Position : PickingMode.Ignore;
-            }
-
-            for (int i = 0; i < splitNumbers.Length; i++)
-            {
-                int j = i;
-                int max = splitNumbers.Length;
-
-                ups[i].clicked += () =>
+                for (int i = 0; i < columns.Length; i++)
                 {
-                    fields[j].value++;
+                    VisualElement column = new();
+                    columns[i] = column;
+                    versionRoot.Add(column);
 
-                    for (int u = j + 1; u < max; u++)
+                    Button up = new();
+                    ups[i] = up;
+                    column.Add(up);
+
+                    IntegerField field = new();
+                    fields[i] = field;
+                    column.Add(field);
+
+                    Button down = new();
+                    downs[i] = down;
+                    column.Add(down);
+                }
+
+                applyButton.style.height = 50;
+
+                resetButton.text = "Reset";
+
+                versionRoot.style.flexDirection = FlexDirection.Row;
+                versionRoot.style.flexGrow = 1;
+
+                for (int i = 0; i < splitNumbers.Length; i++)
+                {
+                    columns[i].style.flexDirection = FlexDirection.Column;
+
+                    ups[i].text = "+";
+                    ups[i].style.fontSize = 20;
+
+                    fields[i].value = int.Parse(splitNumbers[i]);
+                    fields[i].style.fontSize = 20;
+
+                    downs[i].text = "-";
+                    downs[i].style.fontSize = 20;
+                    downs[i].pickingMode = fields[i].value > 0 ? PickingMode.Position : PickingMode.Ignore;
+                }
+
+                for (int i = 0; i < splitNumbers.Length; i++)
+                {
+                    int j = i;
+                    int max = splitNumbers.Length;
+
+                    ups[i].clicked += () =>
                     {
-                        fields[u].value = 0;
-                    }
+                        fields[j].value++;
 
-                    downs[j].pickingMode = fields[j].value > 0 ? PickingMode.Position : PickingMode.Ignore;
+                        for (int u = j + 1; u < max; u++)
+                        {
+                            fields[u].value = 0;
+                        }
 
-                    UpdateButton(applyButton, fields, match);
+                        downs[j].pickingMode = fields[j].value > 0 ? PickingMode.Position : PickingMode.Ignore;
+
+                        UpdateButton(applyButton, fields, match);
+                    };
+
+                    downs[i].clicked += () =>
+                    {
+                        fields[j].value--;
+
+                        for (int u = j + 1; u < max; u++)
+                        {
+                            fields[u].value = 0;
+                        }
+
+                        downs[j].pickingMode = fields[j].value > 0 ? PickingMode.Position : PickingMode.Ignore;
+
+                        UpdateButton(applyButton, fields, match);
+                    };
+                }
+
+                applyButton.clicked += () =>
+                {
+                    string newVersion = GetFinalVersion(fields, match);
+                    PlayerSettings.bundleVersion = newVersion;
+                    currentVersion = newVersion;
+                    UpdateButton(applyButton, fields, PlayerSettings.bundleVersion);
                 };
 
-                downs[i].clicked += () =>
-                {
-                    fields[j].value--;
 
-                    for (int u = j + 1; u < max; u++)
-                    {
-                        fields[u].value = 0;
-                    }
+                resetButton.clicked += () => UpdateWindow();
+                UpdateButton(applyButton, fields, match);
+            }
+            else
+            {
+                Label label = new($"{Application.version} does not match regex {regex}");
+                label.style.fontSize = 20;
+                label.style.alignContent = Align.Center;
+                root.Add(label);
+            }
+        }
 
-                    downs[j].pickingMode = fields[j].value > 0 ? PickingMode.Position : PickingMode.Ignore;
+        private void UpdateButton(Button button, IntegerField[] fields, Match match)
+        {
+            string final = GetFinalVersion(fields, match);
 
-                    UpdateButton(applyButton, fields, match);
-                };
+            UpdateButton(button, fields, final);
+        }
+
+        private void UpdateButton(Button button, IntegerField[] fields, string final)
+        {
+            bool enabled = !currentVersion.Equals(final);
+
+            button.pickingMode = enabled ? PickingMode.Position : PickingMode.Ignore;
+            button.text = enabled ? "Apply Version" : $"Version {final} already in PlayerSettings";
+
+            button.style.backgroundColor = enabled ? new StyleColor(new Color(0.5f, 0.5f, 0.5f, 0.5f)) : new StyleColor(new Color(0.5f, 0.5f, 0.5f, 0.25f));
+        }
+
+        private string GetFinalVersion(IntegerField[] fields, Match match)
+        {
+            string s = string.Empty;
+
+            for (int i = 0; i < fields.Length; i++)
+            {
+                s += fields[i].value + (i < fields.Length - 1 ? "." : "");
             }
 
-            applyButton.clicked += () =>
-            {
-                string newVersion = GetFinalVersion(fields, match);
-                PlayerSettings.bundleVersion = newVersion;
-                currentVersion = newVersion;
-                UpdateButton(applyButton, fields, PlayerSettings.bundleVersion);
-            };
+            s = match.Groups[1] + s;
 
-
-            resetButton.clicked += () => UpdateWindow();
-            UpdateButton(applyButton, fields, match);
+            return s;
         }
-        else
+
+        private void AddLine(VisualElement parent)
         {
-            Label label = new ($"{Application.version} does not match regex {regex}");
-            label.style.fontSize = 20;
-            label.style.alignContent = Align.Center;
-            root.Add(label);
+            VisualElement line = new();
+            line.style.height = 1;
+            line.style.backgroundColor = new Color(0.3f, 0.3f, 0.3f); // dark grey
+            line.style.marginTop = 4;
+            line.style.marginBottom = 4;
+            parent.Add(line);
         }
-    }
 
-    private void UpdateButton(Button button, IntegerField[] fields, Match match)
-    {
-        string final = GetFinalVersion(fields, match);
-
-        UpdateButton(button, fields, final);
-    }
-
-    private void UpdateButton(Button button, IntegerField[] fields, string final)
-    {
-        bool enabled = !currentVersion.Equals(final);
-
-        button.pickingMode = enabled ? PickingMode.Position : PickingMode.Ignore;
-        button.text = enabled ? "Apply Version" : $"Version {final} already in PlayerSettings";
-
-        button.style.backgroundColor = enabled ? new StyleColor(new Color(0.5f, 0.5f, 0.5f, 0.5f)) : new StyleColor(new Color(0.5f, 0.5f, 0.5f, 0.25f));
-    }
-
-    private string GetFinalVersion(IntegerField[] fields, Match match)
-    {
-        string s = string.Empty;
-
-        for (int i = 0; i < fields.Length; i++)
+        private bool NeedsReload()
         {
-            s += fields[i].value + (i < fields.Length - 1 ? "." : "");
+            return !Application.version.Equals(currentVersion);
         }
-
-        s = match.Groups[1] + s;
-
-        return s;
-    }
-
-    private void AddLine(VisualElement parent)
-    {
-        VisualElement line = new();
-        line.style.height = 1;
-        line.style.backgroundColor = new Color(0.3f, 0.3f, 0.3f); // dark grey
-        line.style.marginTop = 4;
-        line.style.marginBottom = 4;
-        parent.Add(line);
-    }
-
-    private bool NeedsReload()
-    {
-        return !Application.version.Equals(currentVersion);
     }
 }
