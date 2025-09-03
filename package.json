@@ -1,0 +1,14 @@
+{
+    "name": "com.ibrahimoezhan.versionupdater",
+    "displayName": "Version Updater",
+    "version": "1.0.0",
+    "unity": "6000.0",
+    "description": "A unity plugin that makes updating version numbers based on semantic versioning easier.",
+    "author": {
+        "name": "Ibrahim Oezhan",
+        "url": "https://github.com/IbrahimOezhan"
+    },
+    "licensesUrl": "https://github.com/IbrahimOezhan/IbrahKit-Version-Updater/blob/main/LICENSE",
+    "documentationUrl": "https://github.com/IbrahimOezhan/IbrahKit-Version-Updater/blob/main/README.md",
+    "changelogUrl": "https://https://github.com/IbrahimOezhan/IbrahKit-Version-Updater/releases",
+}
