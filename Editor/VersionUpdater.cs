@@ -81,6 +81,12 @@ namespace IbrahKit
 
                 VisualElement[] columns = new VisualElement[splitNumbers.Length];
 
+                Label currVersion = new("Version in PlayerSettings: " + currentVersion);
+                root.Add(currVersion);
+
+                Label newVersion = new("Version in VersionUpdater: " + currentVersion);
+                root.Add(newVersion);
+
                 AddLine(root);
 
                 Button resetButton = new();
@@ -107,6 +113,9 @@ namespace IbrahKit
 
                 applyButton.style.height = 50;
 
+                currVersion.style.fontSize = 20;
+                newVersion.style.fontSize = 20;
+
                 resetButton.text = "Reset";
 
                 versionRoot.style.flexDirection = FlexDirection.Row;
@@ -117,13 +126,13 @@ namespace IbrahKit
                     columns[i].style.flexDirection = FlexDirection.Column;
 
                     ups[i].text = "+";
-                    ups[i].style.fontSize = 20;
+                    ups[i].style.fontSize = 30;
 
                     fields[i].value = int.Parse(splitNumbers[i]);
-                    fields[i].style.fontSize = 20;
+                    fields[i].style.fontSize = 30;
 
                     downs[i].text = "-";
-                    downs[i].style.fontSize = 20;
+                    downs[i].style.fontSize = 30;
                     downs[i].pickingMode = fields[i].value > 0 ? PickingMode.Position : PickingMode.Ignore;
                 }
 
@@ -143,7 +152,7 @@ namespace IbrahKit
 
                         downs[j].pickingMode = fields[j].value > 0 ? PickingMode.Position : PickingMode.Ignore;
 
-                        UpdateButton(applyButton, fields, match);
+                        UpdateButton(newVersion,applyButton, fields, match);
                     };
 
                     downs[i].clicked += () =>
@@ -157,21 +166,22 @@ namespace IbrahKit
 
                         downs[j].pickingMode = fields[j].value > 0 ? PickingMode.Position : PickingMode.Ignore;
 
-                        UpdateButton(applyButton, fields, match);
+                        UpdateButton(newVersion,applyButton, fields, match);
                     };
                 }
 
                 applyButton.clicked += () =>
                 {
-                    string newVersion = GetFinalVersion(fields, match);
-                    PlayerSettings.bundleVersion = newVersion;
-                    currentVersion = newVersion;
-                    UpdateButton(applyButton, fields, PlayerSettings.bundleVersion);
+                    string newVersionStr = GetFinalVersion(fields, match);
+                    PlayerSettings.bundleVersion = newVersionStr;
+                    currentVersion = newVersionStr;
+                    currVersion.text = "Version in PlayerSettings: " + currentVersion;
+                    UpdateButton(newVersion,applyButton, fields, PlayerSettings.bundleVersion);
                 };
 
 
                 resetButton.clicked += () => UpdateWindow();
-                UpdateButton(applyButton, fields, match);
+                UpdateButton(newVersion,applyButton, fields, match);
             }
             else
             {
@@ -182,15 +192,17 @@ namespace IbrahKit
             }
         }
 
-        private void UpdateButton(Button button, IntegerField[] fields, Match match)
+        private void UpdateButton(Label newVersion,Button button, IntegerField[] fields, Match match)
         {
             string final = GetFinalVersion(fields, match);
 
-            UpdateButton(button, fields, final);
+            UpdateButton(newVersion,button, fields, final);
         }
 
-        private void UpdateButton(Button button, IntegerField[] fields, string final)
+        private void UpdateButton(Label newVersion, Button button, IntegerField[] fields, string final)
         {
+            newVersion.text = "Version in VersionUpdater: " + final;
+
             bool enabled = !currentVersion.Equals(final);
 
             button.pickingMode = enabled ? PickingMode.Position : PickingMode.Ignore;
