@@ -112,10 +112,12 @@ namespace IbrahKit
                 }
 
                 applyButton.style.height = 50;
+                applyButton.style.fontSize = 20;
 
                 currVersion.style.fontSize = 20;
                 newVersion.style.fontSize = 20;
 
+                resetButton.style.fontSize = 20;
                 resetButton.text = "Reset";
 
                 versionRoot.style.flexDirection = FlexDirection.Row;
