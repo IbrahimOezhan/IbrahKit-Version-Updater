@@ -206,17 +206,17 @@ namespace IbrahKit
             UpdateUI(currVersion,newVersion, button, fields, final);
         }
 
-        private void UpdateUI(Label currVersion,Label newVersion, Button button, IntegerField[] fields, string final)
+        private void UpdateUI(Label currVersion,Label newVersion, Button button, IntegerField[] fields, string newVersionStr)
         {
-            newVersion.text = "Version in VersionUpdater: " + final;
+            newVersion.text = "Version in VersionUpdater: " + newVersionStr;
 
             currVersion.text = "Version in PlayerSettings: " + currentVersion;
 
-            bool enabled = !currentVersion.Equals(final);
+            bool enabled = !currentVersion.Equals(newVersionStr);
 
             button.pickingMode = enabled ? PickingMode.Position : PickingMode.Ignore;
             
-            button.text = enabled ? "Apply version to PlayerSettings" : $"Version {final} already matches the PlayerSettings";
+            button.text = enabled ? $"Apply {newVersionStr} to PlayerSettings" : $"Version {newVersionStr} already matches the PlayerSettings";
 
             button.style.backgroundColor = enabled ? new StyleColor(new Color(0.5f, 0.5f, 0.5f, 0.5f)) : new StyleColor(new Color(0.5f, 0.5f, 0.5f, 0.25f));
         }
