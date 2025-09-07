@@ -216,7 +216,7 @@ namespace IbrahKit
 
             button.pickingMode = enabled ? PickingMode.Position : PickingMode.Ignore;
             
-            button.text = enabled ? "Apply version to PlayerSettings" : $"Version {final} already in PlayerSettings";
+            button.text = enabled ? "Apply version to PlayerSettings" : $"Version {final} already matches the PlayerSettings";
 
             button.style.backgroundColor = enabled ? new StyleColor(new Color(0.5f, 0.5f, 0.5f, 0.5f)) : new StyleColor(new Color(0.5f, 0.5f, 0.5f, 0.25f));
         }
