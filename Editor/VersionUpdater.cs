@@ -53,7 +53,7 @@ namespace IbrahKit
 
             root.Clear();
 
-            Label title = new("IbrahKit Version Updater");
+            Label title = new("Version Updater");
             title.style.fontSize = 30;
             root.Add(title);
 
@@ -81,10 +81,10 @@ namespace IbrahKit
 
                 VisualElement[] columns = new VisualElement[splitNumbers.Length];
 
-                Label currVersion = new("Version in PlayerSettings: " + currentVersion);
+                Label currVersion = new();
                 root.Add(currVersion);
 
-                Label newVersion = new("Version in VersionUpdater: " + currentVersion);
+                Label newVersion = new();
                 root.Add(newVersion);
 
                 AddLine(root);
@@ -141,6 +141,7 @@ namespace IbrahKit
                 for (int i = 0; i < splitNumbers.Length; i++)
                 {
                     int j = i;
+
                     int max = splitNumbers.Length;
 
                     ups[i].clicked += () =>
@@ -154,7 +155,7 @@ namespace IbrahKit
 
                         downs[j].pickingMode = fields[j].value > 0 ? PickingMode.Position : PickingMode.Ignore;
 
-                        UpdateButton(newVersion,applyButton, fields, match);
+                        UpdateUI(currVersion,newVersion,applyButton, fields, match);
                     };
 
                     downs[i].clicked += () =>
@@ -168,47 +169,54 @@ namespace IbrahKit
 
                         downs[j].pickingMode = fields[j].value > 0 ? PickingMode.Position : PickingMode.Ignore;
 
-                        UpdateButton(newVersion,applyButton, fields, match);
+                        UpdateUI(currVersion,newVersion,applyButton, fields, match);
                     };
                 }
 
                 applyButton.clicked += () =>
                 {
-                    string newVersionStr = GetFinalVersion(fields, match);
-                    PlayerSettings.bundleVersion = newVersionStr;
-                    currentVersion = newVersionStr;
-                    currVersion.text = "Version in PlayerSettings: " + currentVersion;
-                    UpdateButton(newVersion,applyButton, fields, PlayerSettings.bundleVersion);
+                    currentVersion = GetFinalVersion(fields, match);
+
+                    PlayerSettings.bundleVersion = currentVersion;
+                    
+                    UpdateUI(currVersion,newVersion,applyButton, fields, PlayerSettings.bundleVersion);
                 };
 
 
                 resetButton.clicked += () => UpdateWindow();
-                UpdateButton(newVersion,applyButton, fields, match);
+                
+                UpdateUI(currVersion,newVersion, applyButton, fields, match);
             }
             else
             {
                 Label label = new($"{Application.version} does not match regex {regex}");
+                
                 label.style.fontSize = 20;
+                
                 label.style.alignContent = Align.Center;
+                
                 root.Add(label);
             }
         }
 
-        private void UpdateButton(Label newVersion,Button button, IntegerField[] fields, Match match)
+        private void UpdateUI(Label currVersion, Label newVersion,Button button, IntegerField[] fields, Match match)
         {
             string final = GetFinalVersion(fields, match);
 
-            UpdateButton(newVersion,button, fields, final);
+            UpdateUI(currVersion,newVersion, button, fields, final);
         }
 
-        private void UpdateButton(Label newVersion, Button button, IntegerField[] fields, string final)
+        private void UpdateUI(Label currVersion,Label newVersion, Button button, IntegerField[] fields, string final)
         {
             newVersion.text = "Version in VersionUpdater: " + final;
+
+            currVersion.text = "Version in PlayerSettings: " + currentVersion;
 
             bool enabled = !currentVersion.Equals(final);
 
             button.pickingMode = enabled ? PickingMode.Position : PickingMode.Ignore;
-            button.text = enabled ? "Apply Version" : $"Version {final} already in PlayerSettings";
+            
+            button.text = enabled ? "Apply version to PlayerSettings" : $"Version {final} already in PlayerSettings";
 
             button.style.backgroundColor = enabled ? new StyleColor(new Color(0.5f, 0.5f, 0.5f, 0.5f)) : new StyleColor(new Color(0.5f, 0.5f, 0.5f, 0.25f));
         }
@@ -230,10 +238,15 @@ namespace IbrahKit
         private void AddLine(VisualElement parent)
         {
             VisualElement line = new();
+            
             line.style.height = 1;
-            line.style.backgroundColor = new Color(0.3f, 0.3f, 0.3f); // dark grey
+            
+            line.style.backgroundColor = new Color(0.3f, 0.3f, 0.3f);
+            
             line.style.marginTop = 4;
+            
             line.style.marginBottom = 4;
+            
             parent.Add(line);
         }
 
